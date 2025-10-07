@@ -71,8 +71,8 @@ export default function Navigation() {
                             color: "#f5f5f5",
                             fontWeight: "500",
                         }}
-                        onMouseOver={(e) => (e.target.style.color = "#b30000")}
-                        onMouseOut={(e) => (e.target.style.color = "#f5f5f5")}
+                        onMouseOver={(e) => (e.currentTarget.style.color = "#b30000")}
+                        onMouseOut={(e) => (e.currentTarget.style.color = "#f5f5f5")}
                     >
                         Posts
                     </a>
@@ -80,7 +80,7 @@ export default function Navigation() {
                     <div className="navbar-item has-dropdown is-hoverable">
                         <a
                             className="navbar-link"
-                            style={{ color: "#b30000", fontWeight: "600" }}
+                            style={{ color: "#f5f5f5", fontWeight: "600" }}
                         >
                             More
                         </a>
@@ -97,8 +97,8 @@ export default function Navigation() {
                                     className="navbar-item"
                                     href={`/${item.toLowerCase()}`}
                                     style={{ color: "#f5f5f5" }}
-                                    onMouseOver={(e) => (e.target.style.color = "#b30000")}
-                                    onMouseOut={(e) => (e.target.style.color = "#f5f5f5")}
+                                    onMouseOver={(e) => (e.currentTarget.style.color = "#b30000")}
+                                    onMouseOut={(e) => (e.currentTarget.style.color = "#f5f5f5")}
                                 >
                                     {item}
                                 </a>
