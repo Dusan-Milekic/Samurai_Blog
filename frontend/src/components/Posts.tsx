@@ -179,6 +179,8 @@ export default function Posts() {
                                                 </span>
                                                 <span style={{ marginLeft: "0.4rem" }}>Comments</span>
                                             </a>
+
+
                                         </div>
 
                                         <a href={`/posts/${post.slug}`} className="has-text-weight-semibold" style={{ color: RED }}>

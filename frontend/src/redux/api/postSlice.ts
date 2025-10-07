@@ -35,7 +35,7 @@ export const likePost = createAsyncThunk<
       const res = await fetch("http://127.0.0.1:8000/likes/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user: 3, post: postId }), // TODO: zameni pravim user ID-jem / JWT
+        body: JSON.stringify({ user: 4, post: postId }), // TODO: zameni pravim user ID-jem / JWT
       });
 
       // DRF kod nas vraća 201 ("liked") ili 200 ("already liked")
