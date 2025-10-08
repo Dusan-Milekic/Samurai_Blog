@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
-
+import { useAuthCookies } from "../../utils/cookies";
 /* ---------- Tipovi ---------- */
 export interface IPost {
   id: number;
@@ -25,31 +25,30 @@ export const fetchPosts = createAsyncThunk<IPost[]>(
 /* ---------- Thunk: Like post (čeka server) ---------- */
 /* Backend (preporuka): vrati JSON { detail: "liked" | "already liked", count_likes: number } */
 export const likePost = createAsyncThunk<
-  { postId: number; count_likes?: number; detail?: string }, // payload
-  number,                                                    // arg: postId
-  { rejectValue: string }
+    { postId: number; count_likes?: number; detail?: string }, // Return type
+    { userId: number; postId: number }, // 🔥 INPUT TYPE - OBJEKAT!
+    { rejectValue: string }
 >(
-  "posts/likePost",
-  async (postId, { rejectWithValue }) => {
-    try {
-      const res = await fetch("http://127.0.0.1:8000/likes/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user: 4, post: postId }), // TODO: zameni pravim user ID-jem / JWT
-      });
+    'posts/likePost',
+    async ({ userId, postId }, { rejectWithValue }) => {
+        try {
+            const res = await fetch("http://127.0.0.1:8000/likes/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user: userId, post: postId }),
+            });
 
-      // DRF kod nas vraća 201 ("liked") ili 200 ("already liked")
-      const data = await res.json().catch(() => ({} as any));
+            if (!res.ok) {
+                const errorData = await res.json();
+                return rejectWithValue(errorData.detail || 'Failed to like post');
+            }
 
-      if (!res.ok && res.status !== 200) {
-        return rejectWithValue(data?.detail || `HTTP ${res.status}`);
-      }
-
-      return { postId, count_likes: data?.count_likes, detail: data?.detail };
-    } catch (err: any) {
-      return rejectWithValue(err?.message || "Network error");
+            const data = await res.json();
+            return { postId, count_likes: data.count_likes };
+        } catch  {
+            return rejectWithValue('Network error');
+        }
     }
-  }
 );
 
 /* ---------- State ---------- */

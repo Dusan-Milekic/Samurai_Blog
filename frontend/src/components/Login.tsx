@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'; // Dodano useEffect
 import { useNavigate } from 'react-router-dom'; // Dodano useNavigate
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { login, selectCurrentUser, selectIsAuthenticated, selectAccountError, selectAccountLoading } from '../redux/api/accountSlice';
+import { useAuthCookies } from '../utils/cookies';
 import Navigation from "./Navigation";
 
 function Login() {
@@ -9,7 +10,7 @@ function Login() {
     const navigate = useNavigate(); // Hook za rutiranje
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
+    const cookies = useAuthCookies();
     const currentUser = useAppSelector(selectCurrentUser);
     const isAuthenticated = useAppSelector(selectIsAuthenticated);
     const error = useAppSelector(selectAccountError);
@@ -19,6 +20,8 @@ function Login() {
     useEffect(() => {
         if (isAuthenticated && currentUser) {
             console.log('User authenticated, redirecting to dashboard...');
+            cookies.clearUserSession();
+            cookies.setUserSession(currentUser);
             navigate('/dashboard');
         }
     }, [isAuthenticated, currentUser, navigate]);

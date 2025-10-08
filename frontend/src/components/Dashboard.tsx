@@ -16,11 +16,6 @@ export default function Dashboard() {
 
     const [currentTime, setCurrentTime] = useState(new Date());
 
-    console.log('🔍 Dashboard render:', {
-        currentUser,
-        isAuthenticated,
-        cookieUser: cookies.getUserSession()
-    });
 
     useEffect(() => {
         const timer = setInterval(() => {

@@ -6,10 +6,12 @@ import Register from './components/Register';
 import Home from './components/Home';
 import Posts from './components/Posts';
 import Dashboard from './components/Dashboard';
+import VerifyEmail from "./components/VerifyEmail"
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux'; // 🔥 DODAJ Redux Provider
 import { CookiesProvider } from 'react-cookie'; // 🔥 DODAJ Cookies Provider
 import { store } from './redux/store'; // 🔥 DODAJ store import
+
 
 function App() {
   return (
@@ -22,6 +24,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path='/posts' element={<Posts />} />
             <Route path='/dashboard' element={<Dashboard />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
           </Routes>
         </Router>
       </Provider>

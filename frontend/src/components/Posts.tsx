@@ -10,9 +10,11 @@ import {
 } from "../redux/api/postSlice";
 import Navigation from "./Navigation";
 import MarkdownRender from "./MarkdownRender";
-
+import { useAuthCookies } from "../utils/cookies";
 /* --- Konstante i helperi --- */
 const RED = "#b30000";
+
+
 
 function formatDate(iso: string) {
     const d = new Date(iso);
@@ -50,7 +52,8 @@ export default function Posts() {
     const loading = useAppSelector(selectPostsLoading);
     const error = useAppSelector(selectPostsError);
     const liking = useAppSelector(selectLikingMap); // { [postId]: boolean }
-
+    const cookie = useAuthCookies();
+    const userId = cookie.getUserSession()?.id;
     useEffect(() => {
         dispatch(fetchPosts());
     }, [dispatch]);
@@ -138,7 +141,11 @@ export default function Posts() {
                                         <div className="is-flex is-align-items-center" style={{ gap: "1rem" }}>
                                             <button
                                                 className="button is-small"
-                                                onClick={() => dispatch(likePost(post.id))}
+                                                onClick={() => {
+                                                    if (userId && post.id) {
+                                                        dispatch(likePost({ userId, postId: post.id }));
+                                                    }
+                                                }}
                                                 title="Like"
                                                 disabled={isLiking}
                                                 aria-disabled={isLiking}

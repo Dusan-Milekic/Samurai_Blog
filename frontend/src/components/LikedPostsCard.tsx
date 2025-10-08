@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { useAuthCookies } from '../utils/cookies';
 import {
@@ -25,9 +25,7 @@ export default function LikedPostsCard({ onClick }: LikedPostsCardProps) {
 
     // Filtriraj likes za trenutnog korisnika
     const userLikes = allLikes.filter(like => like.user === currentUser?.id);
-    console.log("🔍 ALL LIKES:", allLikes);
-    console.log("🔍 CURRENT USER:", currentUser);
-    console.log("🔍 USER LIKES:", userLikes);
+
 
     // 🔥 ISPRAVI - uzmi LENGTH umesto niz
     const likesCount = userLikes.length;

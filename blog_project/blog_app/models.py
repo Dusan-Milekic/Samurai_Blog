@@ -1,4 +1,5 @@
 from django.db import models
+import uuid
 
 # Create your models here.
 class Post(models.Model):
@@ -19,7 +20,7 @@ class User(models.Model):
     last_name = models.CharField(max_length=150)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128)
-
+    is_active = models.BooleanField(default=False)
     def __str__(self):
         return f"{self.first_name} {self.last_name} - {self.email}"
 
@@ -58,3 +59,13 @@ class Likes(models.Model):
 
     def __str__(self):
         return f"{self.user.first_name} liked {self.post.title}"
+
+
+class EmailVerification(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    verification_token = models.UUIDField(default=uuid.uuid4, editable=False)
+    is_verified = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.user.email} - Verified: {self.is_verified}"
