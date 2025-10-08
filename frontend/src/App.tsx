@@ -5,21 +5,27 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Home from './components/Home';
 import Posts from './components/Posts';
+import Dashboard from './components/Dashboard';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
-
-
+import { Provider } from 'react-redux'; // 🔥 DODAJ Redux Provider
+import { CookiesProvider } from 'react-cookie'; // 🔥 DODAJ Cookies Provider
+import { store } from './redux/store'; // 🔥 DODAJ store import
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path='/posts' element={<Posts />} />
-      </Routes>
-    </Router>
+    <CookiesProvider> {/* 🔥 Wrap sa CookiesProvider */}
+      <Provider store={store}> {/* 🔥 Wrap sa Redux Provider */}
+        <Router>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path='/posts' element={<Posts />} />
+            <Route path='/dashboard' element={<Dashboard />} />
+          </Routes>
+        </Router>
+      </Provider>
+    </CookiesProvider>
   );
 }
 

@@ -1,11 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit'
 import postReducer from './api/postSlice'
+import accountReducer from './api/accountSlice'
+import likedPostsReducer from './api/likedPostsSlice'
 // ...
 
 export const store = configureStore({
   reducer: {
     posts: postReducer,
-  }
+    account: accountReducer,
+    likePosts: likedPostsReducer,
+  },
+  
 })
 
 // Infer the `RootState`,  `AppDispatch`, and `AppStore` types from the store itself

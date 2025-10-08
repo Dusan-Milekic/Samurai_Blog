@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.authentication import SessionAuthentication
+from rest_framework.decorators import api_view
 from django.db import models  # ✅ ispravljeno
 from .models import Post, User, SavedPost, Comments, Likes
 from .serializers import (
@@ -71,3 +72,33 @@ class LikesView(APIView):
             {"detail": "liked", "count_likes": updated_likes},
             status=status.HTTP_201_CREATED,
         )
+    def get(self,request):
+        likes = Likes.objects.all()
+        serializer = LikesSerializer(likes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+
+
+@api_view(["POST"])
+def login(request):
+    email = request.data.get("email")
+    password = request.data.get("password")
+
+    if not email or not password:
+        return Response({"detail": "Email and password required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        user = User.objects.get(email=email)
+        if user.password != password:
+            return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        # Login successful
+        serializer = UserSerializer(user)
+        return Response({
+            "success": True,
+            "user": serializer.data
+        }, status=status.HTTP_200_OK)
+        
+    except User.DoesNotExist:
+        return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)

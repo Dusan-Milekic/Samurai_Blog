@@ -91,7 +91,7 @@ export default function Posts() {
                     {posts.length === 0 ? (
                         <div className="has-text-centered">
                             <p className="title is-4" style={{ color: RED }}>No posts yet</p>
-                            <p className="subtitle is-6 has-text-grey-light">When the code is ready, the story will appear.</p>
+                            <p className="subtitle is-6 has-text-grey-light">When the server is ready, the posts will appear.</p>
                         </div>
                     ) : (
                         posts.map((post) => {

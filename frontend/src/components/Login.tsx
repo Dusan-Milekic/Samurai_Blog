@@ -1,6 +1,91 @@
+import React, { useState, useEffect } from 'react'; // Dodano useEffect
+import { useNavigate } from 'react-router-dom'; // Dodano useNavigate
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { login, selectCurrentUser, selectIsAuthenticated, selectAccountError, selectAccountLoading } from '../redux/api/accountSlice';
 import Navigation from "./Navigation";
 
-export default function Login() {
+function Login() {
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate(); // Hook za rutiranje
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const currentUser = useAppSelector(selectCurrentUser);
+    const isAuthenticated = useAppSelector(selectIsAuthenticated);
+    const error = useAppSelector(selectAccountError);
+    const loading = useAppSelector(selectAccountLoading);
+
+    // 🚀 AUTOMATSKA REDIREKCIJA - pomešten na pravo mesto
+    useEffect(() => {
+        if (isAuthenticated && currentUser) {
+            console.log('User authenticated, redirecting to dashboard...');
+            navigate('/dashboard');
+        }
+    }, [isAuthenticated, currentUser, navigate]);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        try {
+            const result = await dispatch(login({ email, password }));
+
+            if (login.fulfilled.match(result)) {
+                console.log('Login successful!');
+                // Navigation će se automatski desiti preko useEffect-a
+            } else {
+                console.error('Login failed');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+        }
+    };
+
+    const quickLogin = async (userEmail: string, userPassword: string) => {
+        try {
+            const result = await dispatch(login({
+                email: userEmail,
+                password: userPassword
+            }));
+
+            if (login.fulfilled.match(result)) {
+                console.log('Quick login successful!');
+                // Navigation će se automatski desiti preko useEffect-a
+            }
+        } catch (error) {
+            console.error('Quick login failed:', error);
+        }
+    };
+
+    // Loading state
+    if (loading) {
+        return (
+            <>
+                <Navigation />
+                <section className="section has-text-centered" style={{ backgroundColor: "#000", minHeight: "100vh", color: "#fff" }}>
+                    <progress className="progress is-danger" value="60" max="100" />
+                    <p className="has-text-grey-light">Logging in...</p>
+                </section>
+            </>
+        );
+    }
+
+    // Authenticated state - prikazuje se kratko pre redirekcije
+    if (isAuthenticated && currentUser) {
+        return (
+            <>
+                <Navigation />
+                <section className="section has-text-centered" style={{ backgroundColor: "#000", minHeight: "100vh", color: "#fff" }}>
+                    <div className="container">
+                        <progress className="progress is-success" value="100" max="100" />
+                        <h2 className="title has-text-light">Welcome, {currentUser.first_name} {currentUser.last_name}!</h2>
+                        <p className="has-text-grey-light">Redirecting to dashboard...</p>
+                    </div>
+                </section>
+            </>
+        );
+    }
+
+    // Login form
     return (
         <>
             <Navigation />
@@ -18,7 +103,7 @@ export default function Login() {
                         <div className="columns is-centered">
                             <div className="column is-5-tablet is-4-desktop is-3-widescreen">
                                 <form
-                                    action=""
+                                    onSubmit={handleSubmit}
                                     className="box"
                                     style={{
                                         backgroundColor: "#0d0d0d",
@@ -38,6 +123,13 @@ export default function Login() {
                                         Login
                                     </h1>
 
+                                    {/* Error display */}
+                                    {error && (
+                                        <div className="notification is-danger mb-4">
+                                            {error}
+                                        </div>
+                                    )}
+
                                     {/* Email */}
                                     <div className="field">
                                         <label htmlFor="email" className="label has-text-light">
@@ -47,8 +139,10 @@ export default function Login() {
                                             <input
                                                 id="email"
                                                 type="email"
-                                                placeholder="e.g. samurai@gmail.com"
+                                                placeholder="e.g. dusan@gmail.com"
                                                 className="input"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
                                                 required
                                                 style={{
                                                     backgroundColor: "#1a1a1a",
@@ -73,6 +167,8 @@ export default function Login() {
                                                 type="password"
                                                 placeholder="*******"
                                                 className="input"
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
                                                 required
                                                 style={{
                                                     backgroundColor: "#1a1a1a",
@@ -100,6 +196,7 @@ export default function Login() {
                                     <div className="field">
                                         <button
                                             type="submit"
+                                            disabled={loading}
                                             className="button is-fullwidth"
                                             style={{
                                                 backgroundColor: "#b30000",
@@ -118,13 +215,38 @@ export default function Login() {
                                                 "0 0 15px rgba(179, 0, 0, 0.6)")
                                             }
                                         >
-                                            Login
+                                            {loading ? 'Logging in...' : 'Login'}
                                         </button>
+                                    </div>
+
+                                    {/* Quick login buttons for demo */}
+                                    <div className="field">
+                                        <p className="has-text-centered mb-3" style={{ color: "#bdbdbd" }}>
+                                            Quick Login (Demo):
+                                        </p>
+                                        <div className="buttons is-centered">
+                                            <button
+                                                type="button"
+                                                className="button is-small is-outlined is-danger"
+                                                onClick={() => quickLogin('dusan@gmail.com', 'zemun10!')}
+                                                disabled={loading}
+                                            >
+                                                Login as Dusan
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="button is-small is-outlined is-danger"
+                                                onClick={() => quickLogin('pera@gmail.com', 'pera_password')}
+                                                disabled={loading}
+                                            >
+                                                Login as Pera
+                                            </button>
+                                        </div>
                                     </div>
 
                                     {/* Link to Register */}
                                     <p className="has-text-centered" style={{ color: "#bdbdbd" }}>
-                                        Don’t have an account?{" "}
+                                        Don't have an account?{" "}
                                         <a href="/register" style={{ color: "#b30000", fontWeight: 600 }}>
                                             Register
                                         </a>
@@ -138,3 +260,5 @@ export default function Login() {
         </>
     );
 }
+
+export default Login;

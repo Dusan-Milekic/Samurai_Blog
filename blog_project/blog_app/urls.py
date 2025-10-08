@@ -1,5 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from . import views  # Make sure to import your views
+
 from .views import (
     PostViewSet,
     UserViewSet,
@@ -17,4 +19,5 @@ router.register("comments", CommentsViewSet)
 urlpatterns = [
     path("", include(router.urls)),
     path("likes/", LikesView.as_view(), name="likes"),  # <-- ručno dodato
+    path("auth/login/", views.login, name="login"),  # Add this line
 ]

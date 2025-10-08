@@ -58,10 +58,23 @@ export default function Navigation() {
                             color: "#f5f5f5",
                             fontWeight: "500",
                         }}
-                        onMouseOver={(e) => (e.target.style.color = "#b30000")}
-                        onMouseOut={(e) => (e.target.style.color = "#f5f5f5")}
+                        onMouseOver={(e) => (e.currentTarget.style.color = "#b30000")}
+                        onMouseOut={(e) => (e.currentTarget.style.color = "#f5f5f5")}
                     >
                         Home
+                    </a>
+
+                    <a
+                        className="navbar-item"
+                        href="/dashboard"
+                        style={{
+                            color: "#f5f5f5",
+                            fontWeight: "500",
+                        }}
+                        onMouseOver={(e) => (e.currentTarget.style.color = "#b30000")}
+                        onMouseOut={(e) => (e.currentTarget.style.color = "#f5f5f5")}
+                    >
+                        Dashboard
                     </a>
 
                     <a
@@ -119,13 +132,12 @@ export default function Navigation() {
                                     fontWeight: "600",
                                     border: "none",
                                 }}
-                                onMouseOver={(e) =>
-                                (e.currentTarget.style.boxShadow =
-                                    "0 0 12px rgba(179,0,0,0.8)")
-                                }
-                                onMouseOut={(e) =>
-                                    (e.currentTarget.style.boxShadow = "none")
-                                }
+                                onMouseOver={(e) => {
+                                    e.currentTarget.style.boxShadow = "0 0 12px rgba(179,0,0,0.8)";
+                                }}
+                                onMouseOut={(e) => {
+                                    e.currentTarget.style.boxShadow = "none";
+                                }}
                             >
                                 <strong>Sign up</strong>
                             </a>
@@ -139,10 +151,10 @@ export default function Navigation() {
                                     border: "1px solid #b30000",
                                     fontWeight: "500",
                                 }}
-                                onMouseOver={(e) =>
-                                    (e.currentTarget.style.backgroundColor = "#b30000") &
-                                    (e.currentTarget.style.color = "#fff")
-                                }
+                                onMouseOver={(e) => {
+                                    e.currentTarget.style.backgroundColor = "#b30000";
+                                    e.currentTarget.style.color = "#fff";
+                                }}
                                 onMouseOut={(e) => {
                                     e.currentTarget.style.backgroundColor = "#1a1a1a";
                                     e.currentTarget.style.color = "#b30000";
