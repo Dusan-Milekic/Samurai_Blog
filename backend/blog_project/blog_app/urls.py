@@ -1,13 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from django import views
-from blog_app.views import (
-    PostViewSet,
-    UserViewSet,
-    SavedPostViewSet,
-    CommentsViewSet,
-    LikesView,
-)
+from blog_app.views import login, register, verify_email, LikesView, PostViewSet, UserViewSet, SavedPostViewSet, CommentsViewSet
+
 
 router = DefaultRouter()
 router.register("posts", PostViewSet)
@@ -18,7 +12,7 @@ router.register("comments", CommentsViewSet)
 urlpatterns = [
     path("", include(router.urls)),
     path("likes/", LikesView.as_view(), name="likes"),  # <-- ručno dodato
-    path("auth/login/", views.login, name="login"),  # Add this line
-    path("auth/register/", views.register, name="register"),  # Add this line
-    path('verify-email/', views.verify_email, name='verify-email'),
+    path("auth/login/", login, name="login"),  # Add this line
+    path("auth/register/",register, name="register"),  # Add this line
+    path('verify-email/', verify_email, name='verify-email'),
 ]
