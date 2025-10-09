@@ -8,7 +8,6 @@
 
     /* Bundler mode */
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "moduleDetection": "force",
@@ -21,9 +20,6 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
 
-    /* 🔥 DODAJ OVO ZA DEPRECATION WARNING */
-    "ignoreDeprecations": "6.0",
-
     /* Types */
     "types": ["vite/client", "node"],
     "esModuleInterop": true,
@@ -33,8 +29,6 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
-    "src/**/*.js", 
-    "src/**/*.jsx",
     "vite.config.ts"
   ],
   "exclude": [
