@@ -11,9 +11,9 @@ router.register(r"saved", SavedPostViewSet, basename='saved')
 router.register(r"comments", CommentsViewSet, basename='comments')
 
 urlpatterns = [
-    path("api/", include(router.urls)),
-    path("api/likes/", LikesView.as_view(), name="likes"),  # <-- ručno dodato
-    path("api/auth/login/", login, name="login"),  # Add this line
-    path("api/auth/register/",register, name="register"),  # Add this line
-    path("api/verify-email/", verify_email, name="verify-email"),
+    path("", include(router.urls)),
+    path("likes/", LikesView.as_view(), name="likes"),  # <-- ručno dodato
+    path("auth/login/", login, name="login"),  # Add this line
+    path("auth/register/",register, name="register"),  # Add this line
+    path("verify-email/", verify_email, name="verify-email"),
 ]

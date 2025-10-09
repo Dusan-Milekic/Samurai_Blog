@@ -11,12 +11,14 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-
+DEBUG = False  # Važno za production!
 ALLOWED_HOSTS = [
     'server-production-8e21.up.railway.app',
     'localhost',
-    '127.0.0.1'
+    '127.0.0.1',
+    '.onrender.com',  # Za sve onrender subdomain-e
 ]
+
 
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
