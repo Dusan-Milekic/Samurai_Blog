@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-
+from django import views
 from blog_app.views import (
     PostViewSet,
     UserViewSet,
