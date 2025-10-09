@@ -113,7 +113,7 @@ def register(request):
         # Kreiraj verification
         verification = EmailVerification.objects.create(user=user)
         
-        verification_url = f"http://localhost:5173/verify-email?token={verification.verification_token}"
+       # verification_url = f"http://localhost:5173/verify-email?token={verification.verification_token}"
         
         # 🔥 POKUŠAJ DA POŠALJEŠ EMAIL
         try:
@@ -126,7 +126,7 @@ def register(request):
 
                 To complete your registration, please verify your email address by clicking the link below:
 
-                {verification_url}
+                
 
                 This verification link will expire in 24 hours.
 
