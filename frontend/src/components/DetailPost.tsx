@@ -1,32 +1,83 @@
 import { fetchPosts, selectPosts } from "../redux/api/postSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { createRef, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useRef, useEffect, useState } from "react"; // 🔥 useRef umesto createRef
+import { useParams } from "react-router-dom"; // 🔥 ukloni data import
 import Navigation from "./Navigation";
 import MarkdownRender from "./MarkdownRender";
 import { useAuthCookies } from "../utils/cookies";
+// 🔥 ukloni dupli useDispatch import
 
 export default function DetailPost() {
-    // 🔥 ISPRAVKA - koristi useParams umesto window.location
     const { slug } = useParams<{ slug: string }>();
     const dispatch = useAppDispatch();
     const posts = useAppSelector(selectPosts);
+    const [users, setUsers] = useState<any[]>([]);
+    const [allComments, setAllComments] = useState<any[]>([]);
+    const [commentsLoading, setCommentsLoading] = useState(true);
+    const [isPosting, setIsPosting] = useState(false);
 
+    const commentText = useRef<HTMLTextAreaElement>(null); // 🔥 useRef umesto createRef
+    const cookie = useAuthCookies();
+
+    // 🔥 ISPRAVKA - ukloni users iz dependency array (beskonačna petlja)
     useEffect(() => {
         dispatch(fetchPosts());
-    }, [dispatch]);
+
+        const fetchUsers = async () => {
+            try {
+                const response = await fetch("http://127.0.0.1:8000/users/", {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                });
+                const data = await response.json();
+                setUsers(data);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        };
+
+        fetchUsers();
+    }, [dispatch]); // 🔥 ukloni users iz dependency
 
     const currentPost = posts.find(post => post.slug === slug);
-    const commentText = createRef<HTMLTextAreaElement>();
-    const cookie = useAuthCookies();
+
+    const GetComments = async (): Promise<any[]> => {
+        try {
+            const response = await fetch("http://127.0.0.1:8000/comments/");
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log("📦 Comments fetched:", data);
+            return data;
+
+        } catch (error) {
+            console.error("❌ Error fetching comments:", error);
+            return [];
+        }
+    };
+
+    // 🔥 FETCH COMMENTS
+    useEffect(() => {
+        const fetchComments = async () => {
+            setCommentsLoading(true);
+            const comments = await GetComments();
+            setAllComments(comments);
+            setCommentsLoading(false);
+        };
+
+        fetchComments();
+    }, []);
+
     const PostComment = async () => {
         try {
-
+            setIsPosting(true);
             const userID = cookie.getUserSession()?.id;
             const postID = currentPost?.id;
             const comment = commentText.current?.value;
 
-            // 🔥 VALIDACIJA PRE SLANJA
             if (!userID) {
                 alert("You must be logged in to comment!");
                 return;
@@ -42,13 +93,10 @@ export default function DetailPost() {
                 return;
             }
 
-            // 🔥 ASYNC FETCH SA ERROR HANDLING
             const response = await fetch("http://127.0.0.1:8000/comments/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    // 🔥 DODAJ AUTH TOKEN AKO IMAŠ
-                    // "Authorization": `Bearer ${cookie.getAuthToken()}`
                 },
                 body: JSON.stringify({
                     user: userID,
@@ -57,7 +105,6 @@ export default function DetailPost() {
                 })
             });
 
-            // 🔥 PROVERI RESPONSE STATUS
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
@@ -66,56 +113,34 @@ export default function DetailPost() {
             const result = await response.json();
             console.log("✅ Comment posted successfully:", result);
 
-            // 🔥 OČISTI FORMU NAKON USPEŠNOG SLANJA
+            // 🔥 OČISTI FORMU
             if (commentText.current) {
                 commentText.current.value = "";
             }
 
-            // 🔥 REFRESH COMMENTS ILI UPDATE STATE
-            // fetchComments(); // ako imaš funkciju za refresh
+            // 🔥 REFRESH COMMENTS
+            const updatedComments = await GetComments();
+            setAllComments(updatedComments);
 
             alert("Comment posted successfully!");
 
         } catch (error) {
             console.error("❌ Error posting comment:", error);
             alert(`Failed to post comment: ${error.message}`);
-        }
-    };
-    const GetComments = async (): Promise<any[]> => {
-        try {
-            const response = await fetch("http://127.0.0.1:8000/comments/");
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            console.log("📦 Comments fetched:", data);
-            return data; // ✅ VRAĆA podatke
-
-        } catch (error) {
-            console.error("❌ Error fetching comments:", error);
-            return []; // ✅ VRAĆA prazan array u slučaju greške
+        } finally {
+            setIsPosting(false);
         }
     };
 
-    // ✅ ISPRAVLJEN STATE SA PROPER TYPE
-    const [allComments, setAllComments] = useState<any[]>([]);
-    const [commentsLoading, setCommentsLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchComments = async () => {
-            setCommentsLoading(true);
-            const comments = await GetComments();
-            setAllComments(comments);
-            setCommentsLoading(false);
-        };
-
-        fetchComments();
-    }, []);
-
-    // ✅ FILTRIRAJ KOMENTARE ZA TRENUTNI POST
+    // 🔥 FILTRIRAJ KOMENTARE ZA TRENUTNI POST
     const postComments = allComments.filter((comment: any) => comment.post === currentPost?.id);
+
+    // 🔥 HELPER FUNKCIJA ZA NALAŽENJE KORISNIKA
+    const getUserById = (userId: number) => {
+        const user = users.find(u => u.id === userId);
+        return user ? user.username || user.email || `User ${userId}` : `User ${userId}`;
+    };
+
     return (
         <>
             <Navigation />
@@ -177,7 +202,7 @@ export default function DetailPost() {
                             }}>
                                 <h2 className="title is-3 has-text-white mb-4">
                                     <i className="fa fa-comments mr-3"></i>
-                                    Comments
+                                    Comments ({postComments.length})
                                 </h2>
 
                                 {/* COMMENT FORM */}
@@ -198,28 +223,50 @@ export default function DetailPost() {
                                     </div>
                                     <div className="field">
                                         <div className="control">
-                                            <button className="button is-primary" onClick={PostComment}>
+                                            <button
+                                                className={`button is-primary ${isPosting ? 'is-loading' : ''}`}
+                                                onClick={PostComment}
+                                                disabled={isPosting}
+                                            >
                                                 <i className="fa fa-paper-plane mr-2"></i>
-                                                Post Comment
+                                                {isPosting ? 'Posting...' : 'Post Comment'}
                                             </button>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* PLACEHOLDER COMMENTS */}
+                                {/* COMMENTS LIST */}
                                 <div className="modern-comments-list">
-                                    <div className="has-text-grey-light has-text-centered py-6">
-                                        <i className="fa fa-comment-o" style={{ fontSize: "3rem", marginBottom: "1rem" }}></i>
-                                        {postComments.length > 0 ? (
-                                            postComments.map((comment: any) => (
-                                                <div key={comment.id} className="modern-comment">
-                                                    <p className="has-text-white">{comment.comment}</p>
+                                    {commentsLoading ? (
+                                        <div className="has-text-centered py-4">
+                                            <div className="button is-loading is-ghost">Loading comments...</div>
+                                        </div>
+                                    ) : postComments.length > 0 ? (
+                                        postComments.map((comment: any) => (
+                                            <div key={comment.id} className="comment-item mb-4 p-4" style={{
+                                                backgroundColor: "#2a2a2a",
+                                                borderRadius: "8px",
+                                                border: "1px solid #3a3a3a"
+                                            }}>
+                                                <div className="comment-header mb-2">
+                                                    <span className="has-text-white has-text-weight-semibold">
+                                                        {getUserById(comment.user)}
+                                                    </span>
+                                                    <span className="has-text-grey-light is-size-7 ml-2">
+                                                        {new Date(comment.created_at || Date.now()).toLocaleDateString()}
+                                                    </span>
                                                 </div>
-                                            ))
-                                        ) : (
+                                                <div className="comment-content has-text-grey-light">
+                                                    {comment.comment}
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="has-text-grey-light has-text-centered py-6">
+                                            <i className="fa fa-comment-o" style={{ fontSize: "3rem", marginBottom: "1rem" }}></i>
                                             <p>No comments yet. Be the first to comment!</p>
-                                        )}
-                                    </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
