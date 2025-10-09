@@ -1,8 +1,8 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from . import views  # Make sure to import your views
+import views  # Make sure to import your views
 
-from .views import (
+from views import (
     PostViewSet,
     UserViewSet,
     SavedPostViewSet,
