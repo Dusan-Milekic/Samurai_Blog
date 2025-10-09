@@ -19,6 +19,8 @@ export interface IPost {
 export const fetchPosts = createAsyncThunk<IPost[]>(
   "posts/fetchPosts",
   async () => {
+      console.log(API_BASE_URL)
+  console.log(`${API_BASE_URL}/posts/`);
     const res = await fetch(`${API_BASE_URL}/posts/`);
     if (!res.ok) throw new Error(`Failed to fetch posts: ${res.status}`);
     return (await res.json()) as IPost[];
