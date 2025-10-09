@@ -23,7 +23,7 @@ ALLOWED_HOSTS = [
 
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
-    "https://samurai-blog-zcbg.vercel.app/"
+    "https://samurai-blog.vercel.app/"
 ]
 CORS_ALLOW_ALL_ORIGINS = True  # Privremeno za test
 
