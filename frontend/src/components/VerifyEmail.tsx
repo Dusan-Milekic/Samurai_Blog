@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import Navigation from './Navigation';
 
@@ -11,55 +11,47 @@ export default function VerifyEmail() {
     useEffect(() => {
         const token = searchParams.get('token');
 
-        console.log('🔍 VerifyEmail component loaded!');
-        console.log('🔍 Token from URL:', token);
-        console.log('🔍 Full URL:', window.location.href);
+
 
         if (!token) {
-            console.log('❌ No token found in URL');
+
             setStatus('error');
             setMessage('Invalid verification link - no token found');
             return;
         }
 
         // Pozovi backend verification
-        console.log('🔄 Calling verification API...');
+
         const apiUrl = `http://127.0.0.1:8000/verify-email/?token=${token}`;
-        console.log('🔍 API URL:', apiUrl);
+
 
         fetch(apiUrl)
             .then(res => {
-                console.log('🔍 Response status:', res.status);
-                console.log('🔍 Response ok:', res.ok);
+
                 return res.json();
             })
             .then(data => {
-                console.log('🔍 Response data:', data);
+
 
                 if (data.success) {
                     setStatus('success');
                     setMessage(data.message);
-                    console.log('✅ Verification successful');
+
                     // Redirect na login nakon 3 sekunde
                     setTimeout(() => {
-                        console.log('🔄 Redirecting to login...');
+
                         navigate('/login');
                     }, 3000);
                 } else {
                     setStatus('error');
                     setMessage(data.error || 'Verification failed');
-                    console.log('❌ Verification failed:', data.error);
+
                 }
             })
-            .catch(error => {
-                console.error('❌ Verification error:', error);
-                setStatus('error');
-                setMessage('Network error occurred');
-            });
+
     }, [searchParams, navigate]);
 
-    // 🔥 TEST RENDER - da vidiš da li komponenta radi
-    console.log('🔍 VerifyEmail rendering, status:', status);
+
 
     return (
         <>
