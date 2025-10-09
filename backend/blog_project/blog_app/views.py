@@ -6,8 +6,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view
 from django.db import models
-from models import Post, User, SavedPost, Comments, Likes, EmailVerification
-from serializers import (
+from blog_app.models import Post, User, SavedPost, Comments, Likes, EmailVerification
+from blog_app.serializers import (
     PostSerializer,
     UserSerializer,
     SavedPostSerializer,
