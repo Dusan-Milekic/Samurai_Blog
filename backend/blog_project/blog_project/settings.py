@@ -30,6 +30,7 @@ CORS_ALLOW_ALL_ORIGINS = True  # Privremeno za test
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
     "https://server-production-8e21.up.railway.app",
+    "https://samurai-blog-zcbg.vercel.app/"
 ]
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
