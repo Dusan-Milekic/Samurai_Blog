@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import Navigation from './Navigation';
-const API_BASE_URL = import.meta.env.VITE_API_URL
+
 export default function VerifyEmail() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
@@ -22,7 +22,7 @@ export default function VerifyEmail() {
 
         // Pozovi backend verification
 
-        const apiUrl = `${API_BASE_URL}/verify-email/?token=${token}`;
+        const apiUrl = "https://samurai-blog.onrender.com/verify-email/?token=${token}";
 
 
         fetch(apiUrl)

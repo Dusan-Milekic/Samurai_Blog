@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
-const API_BASE_URL = import.meta.env.VITE_API_URL 
+
 /* ---------- Tipovi ---------- */
 export interface IAccount {
   id: number;
@@ -32,7 +32,7 @@ export interface AccountState {
 export const login = createAsyncThunk<IAccount, LoginCredentials>(
   "account/login",
   async ({ email, password }) => {
-    const res = await fetch(`${API_BASE_URL}/auth/login/`, {
+    const res = await fetch("https://samurai-blog.onrender.com/auth/login/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -58,7 +58,7 @@ export const fetchCurrentUser = createAsyncThunk<IAccount>(
       throw new Error('No authentication token found');
     }
 
-    const res = await fetch(`${API_BASE_URL}/auth/me/`, {
+    const res = await fetch("https://samurai-blog.onrender.com/auth/me/", {
       headers: {
         "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",

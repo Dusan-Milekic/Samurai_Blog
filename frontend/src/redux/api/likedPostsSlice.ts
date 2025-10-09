@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
-const API_BASE_URL = import.meta.env.VITE_API_URL
+
 /* ---------- Tipovi ---------- */
 export interface ILike {
   id: number;
@@ -22,7 +22,7 @@ export interface ILikedPost {
 export const fetchLikes = createAsyncThunk<ILike[]>(
   "likedPosts/fetchLikes",
   async () => {
-    const res = await fetch(`${API_BASE_URL}/likes/`);
+    const res = await fetch("https://samurai-blog.onrender.com/likes/");
     if (!res.ok) throw new Error(`Failed to fetch likes: ${res.status}`);
     return (await res.json()) as ILike[];
   }
@@ -35,7 +35,7 @@ export const toggleLikePost = createAsyncThunk<
 >(
   "likedPosts/toggleLikePost",
   async ({ userId, postId }) => {
-    const res = await fetch(`${API_BASE_URL}/likes/`, {
+    const res = await fetch("https://samurai-blog.onrender.com/likes/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

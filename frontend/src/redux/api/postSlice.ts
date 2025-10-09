@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL
+
 
 /* ---------- Tipovi ---------- */
 export interface IPost {
@@ -19,9 +19,9 @@ export interface IPost {
 export const fetchPosts = createAsyncThunk<IPost[]>(
   "posts/fetchPosts",
   async () => {
-      console.log(API_BASE_URL)
-  console.log(`${API_BASE_URL}/posts/`);
-    const res = await fetch(`${API_BASE_URL}/posts/`);
+      console.log("https://samurai-blog.onrender.com")
+  console.log(`${"https://samurai-blog.onrender.com"}/posts/`);
+    const res = await fetch("https://samurai-blog.onrender.com/posts/");
     if (!res.ok) throw new Error(`Failed to fetch posts: ${res.status}`);
     return (await res.json()) as IPost[];
   }
@@ -36,7 +36,7 @@ export const likePost = createAsyncThunk<
     'posts/likePost',
     async ({ userId, postId }, { rejectWithValue }) => {
         try {
-            const res = await fetch(`${API_BASE_URL}/likes/`, {
+            const res = await fetch("https://samurai-blog.onrender.com/likes/", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ user: userId, post: postId }),
