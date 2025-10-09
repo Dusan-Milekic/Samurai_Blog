@@ -4,10 +4,10 @@ from blog_app.views import login, register, verify_email, LikesView, PostViewSet
 
 
 router = DefaultRouter()
-router.register("posts", PostViewSet)
-router.register("users", UserViewSet)
-router.register("saved", SavedPostViewSet)
-router.register("comments", CommentsViewSet)
+router.register(r"posts", PostViewSet)
+router.register(r"users", UserViewSet)
+router.register(r"saved", SavedPostViewSet)
+router.register(r"comments", CommentsViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
