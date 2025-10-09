@@ -17,7 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+from blog_project.blog_app.views import PostViewSet
+
 urlpatterns = [
     path('', include('blog_app.urls')),
+    path('posts/',PostViewSet),
     path('admin/', admin.site.urls),
 ]
+    
