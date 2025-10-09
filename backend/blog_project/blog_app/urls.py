@@ -1,13 +1,14 @@
+from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from blog_app.views import login, register, verify_email, LikesView, PostViewSet, UserViewSet, SavedPostViewSet, CommentsViewSet
 
 
 router = DefaultRouter()
-router.register(r"posts", PostViewSet)
-router.register(r"users", UserViewSet)
-router.register(r"saved", SavedPostViewSet)
-router.register(r"comments", CommentsViewSet)
+router.register(r"posts", PostViewSet, basename='posts')
+router.register(r"users", UserViewSet, basename='users')
+router.register(r"saved", SavedPostViewSet, basename='saved')
+router.register(r"comments", CommentsViewSet, basename='comments')
 
 urlpatterns = [
     path("api/", include(router.urls)),
