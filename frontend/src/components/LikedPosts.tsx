@@ -4,8 +4,9 @@ import { useAuthCookies } from '../utils/cookies';
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { useEffect, useState } from "react";
 import { fetchPosts, selectPosts } from "../redux/api/postSlice";
+const API_BASE_URL = import.meta.env.VITE_API_URL
 const fetchLikedPosts = async () => {
-    const response = await fetch('http://localhost:8000/likes/', {
+    const response = await fetch(`${API_BASE_URL}/likes/`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

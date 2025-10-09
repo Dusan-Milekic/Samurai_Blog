@@ -1,7 +1,7 @@
 import React, { createRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navigation from "./Navigation";
-
+const API_BASE_URL = import.meta.env.VITE_API_URL
 interface RegisterResponse {
     message?: string;
     error?: string;
@@ -50,7 +50,7 @@ export default function Register() {
 
     // Register API poziv
     async function fetchRegister(): Promise<RegisterResponse> {
-        const response = await fetch("http://127.0.0.1:8000/auth/register/", {
+        const response = await fetch(`${API_BASE_URL}/auth/register/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

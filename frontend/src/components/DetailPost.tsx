@@ -20,7 +20,7 @@ interface Comment {
     comment: string;
     created_at: string;
 }
-
+const API_BASE_URL = import.meta.env.VITE_API_URL
 export default function DetailPost() {
     const { slug } = useParams<{ slug: string }>();
     const dispatch = useAppDispatch();
@@ -40,7 +40,7 @@ export default function DetailPost() {
 
         const fetchUsers = async () => {
             try {
-                const response = await fetch("http://127.0.0.1:8000/users/", {
+                const response = await fetch(`${API_BASE_URL}/users/`, {
                     method: "GET",
                     headers: { "Content-Type": "application/json" },
                 });
@@ -59,7 +59,7 @@ export default function DetailPost() {
     // 🔥 ISPRAVKA - proper return type
     const GetComments = async (): Promise<Comment[]> => {
         try {
-            const response = await fetch("http://127.0.0.1:8000/comments/");
+            const response = await fetch(`${API_BASE_URL}/comments/`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -107,7 +107,7 @@ export default function DetailPost() {
                 return;
             }
 
-            const response = await fetch("http://127.0.0.1:8000/comments/", {
+            const response = await fetch(`${API_BASE_URL}/comments/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
