@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
 /* ---------- Tipovi ---------- */
 export interface IPost {
   id: number;
@@ -17,7 +19,7 @@ export interface IPost {
 export const fetchPosts = createAsyncThunk<IPost[]>(
   "posts/fetchPosts",
   async () => {
-    const res = await fetch("http://127.0.0.1:8000/posts/");
+    const res = await fetch(`${API_BASE_URL}/posts/`);
     if (!res.ok) throw new Error(`Failed to fetch posts: ${res.status}`);
     return (await res.json()) as IPost[];
   }
@@ -32,7 +34,7 @@ export const likePost = createAsyncThunk<
     'posts/likePost',
     async ({ userId, postId }, { rejectWithValue }) => {
         try {
-            const res = await fetch("http://127.0.0.1:8000/likes/", {
+            const res = await fetch(`${API_BASE_URL}/likes/`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ user: userId, post: postId }),
