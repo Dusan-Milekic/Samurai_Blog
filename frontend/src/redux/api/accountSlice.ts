@@ -27,7 +27,7 @@ export interface AccountState {
   isAuthenticated: boolean;
   token: string | null;
 }
-
+console.log("API_BASE_URL:", API_BASE_URL); // Dodato za proveru vrednosti
 /* ---------- Thunk: Login with email and password ---------- */
 export const login = createAsyncThunk<IAccount, LoginCredentials>(
   "account/login",

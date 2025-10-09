@@ -21,16 +21,12 @@ ALLOWED_HOSTS = [
 ]
 
 
-# CORS settings
-CORS_ALLOWED_ORIGINS = [
-    "https://samurai-blog.vercel.app/"
-]
-CORS_ALLOW_ALL_ORIGINS = True  # Privremeno za test
 
+CORS_ALLOW_ALL_ORIGINS = True  # Privremeno za test
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
     "https://server-production-8e21.up.railway.app",
-    "https://samurai-blog-zcbg.vercel.app/"
+    "https://samurai-blog.vercel.app/"
 ]
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -43,12 +39,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-du1u--)998l$9!z-392qj4%tpc@lfwgp0cq--)@$a-f1$6v01p'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 
-
-# Dodaj ili promeni u settings.py:
 
 
 # Application definition
@@ -75,7 +67,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-CORS_ALLOW_ALL_ORIGINS = True
+
 
 ROOT_URLCONF = 'blog_project.urls'
 
