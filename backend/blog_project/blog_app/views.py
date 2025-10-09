@@ -142,17 +142,14 @@ def register(request):
             email_status = "Email sent successfully! Please check your inbox."
             
         except Exception as email_error:
-            print(f"❌ Email sending failed: {email_error}")
-            email_status = f"Registration successful, but email failed to send. Verification link: {verification_url}"
+            email_status = f"Registration successful, but email failed to send. Verification link:"
         
-        print(f"🔍 User created: {user.email}")
-        print(f"🔍 Verification token: {verification.verification_token}")
-        print(f"🔍 Verification URL: {verification_url}")
+      
         
         return Response({
             "message": email_status,
             "success": True,
-            "verification_url": verification_url  # Za backup
+        
         }, status=status.HTTP_201_CREATED)
         
     except Exception as e:
