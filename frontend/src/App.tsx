@@ -16,14 +16,13 @@ import { CookiesProvider } from 'react-cookie';
 import { store } from './redux/store';
 import { fetchPosts } from './redux/api/postSlice';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from './redux/hooks'; // 🔥 TYPED DISPATCH
 
-// 🔥 INNER COMPONENT SA useDispatch HOOK
+// 🔥 INNER COMPONENT SA TYPED DISPATCH
 function AppContent() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch(); // ✅ Type-safe dispatch
 
   useEffect(() => {
-    // ✅ OVDE možeš safely dispatch
     dispatch(fetchPosts());
   }, [dispatch]);
 
@@ -37,17 +36,13 @@ function AppContent() {
         <Route path='/dashboard' element={<Dashboard />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/liked-posts" element={<LikedPosts />} />
-
-        {/* 🔥 DYNAMIC ROUTE SA PARAM */}
         <Route path="/posts/:slug" element={<DetailPost />} />
       </Routes>
     </Router>
   );
 }
 
-
 function App() {
-
   return (
     <CookiesProvider>
       <Provider store={store}>

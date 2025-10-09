@@ -1,25 +1,40 @@
 import { fetchPosts, selectPosts } from "../redux/api/postSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { useRef, useEffect, useState } from "react"; // 🔥 useRef umesto createRef
-import { useParams } from "react-router-dom"; // 🔥 ukloni data import
+import { useRef, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import Navigation from "./Navigation";
 import MarkdownRender from "./MarkdownRender";
 import { useAuthCookies } from "../utils/cookies";
-// 🔥 ukloni dupli useDispatch import
+
+// 🔥 INTERFACES ZA TYPE SAFETY
+interface User {
+    id: number;
+    username: string;
+    email: string;
+}
+
+interface Comment {
+    id: number;
+    user: number;
+    post: number;
+    comment: string;
+    created_at: string;
+}
 
 export default function DetailPost() {
     const { slug } = useParams<{ slug: string }>();
     const dispatch = useAppDispatch();
     const posts = useAppSelector(selectPosts);
-    const [users, setUsers] = useState<any[]>([]);
-    const [allComments, setAllComments] = useState<any[]>([]);
+
+    // 🔥 ISPRAVKA - proper array typing
+    const [users, setUsers] = useState<User[]>([]);
+    const [allComments, setAllComments] = useState<Comment[]>([]);
     const [commentsLoading, setCommentsLoading] = useState(true);
     const [isPosting, setIsPosting] = useState(false);
 
-    const commentText = useRef<HTMLTextAreaElement>(null); // 🔥 useRef umesto createRef
+    const commentText = useRef<HTMLTextAreaElement>(null);
     const cookie = useAuthCookies();
 
-    // 🔥 ISPRAVKA - ukloni users iz dependency array (beskonačna petlja)
     useEffect(() => {
         dispatch(fetchPosts());
 
@@ -37,11 +52,12 @@ export default function DetailPost() {
         };
 
         fetchUsers();
-    }, [dispatch]); // 🔥 ukloni users iz dependency
+    }, [dispatch]);
 
     const currentPost = posts.find(post => post.slug === slug);
 
-    const GetComments = async (): Promise<any[]> => {
+    // 🔥 ISPRAVKA - proper return type
+    const GetComments = async (): Promise<Comment[]> => {
         try {
             const response = await fetch("http://127.0.0.1:8000/comments/");
 
@@ -50,7 +66,6 @@ export default function DetailPost() {
             }
 
             const data = await response.json();
-            console.log("📦 Comments fetched:", data);
             return data;
 
         } catch (error) {
@@ -59,7 +74,6 @@ export default function DetailPost() {
         }
     };
 
-    // 🔥 FETCH COMMENTS
     useEffect(() => {
         const fetchComments = async () => {
             setCommentsLoading(true);
@@ -110,9 +124,6 @@ export default function DetailPost() {
                 throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
             }
 
-            const result = await response.json();
-            console.log("✅ Comment posted successfully:", result);
-
             // 🔥 OČISTI FORMU
             if (commentText.current) {
                 commentText.current.value = "";
@@ -124,19 +135,16 @@ export default function DetailPost() {
 
             alert("Comment posted successfully!");
 
-        } catch (error) {
-            console.error("❌ Error posting comment:", error);
-            alert(`Failed to post comment: ${error.message}`);
-        } finally {
+        }
+        finally { // 🔥 ISPRAVKA - dodaj catch block
             setIsPosting(false);
         }
     };
 
-    // 🔥 FILTRIRAJ KOMENTARE ZA TRENUTNI POST
-    const postComments = allComments.filter((comment: any) => comment.post === currentPost?.id);
+    // 🔥 ISPRAVKA - proper typing
+    const postComments = allComments.filter((comment: Comment) => comment.post === currentPost?.id);
 
-    // 🔥 HELPER FUNKCIJA ZA NALAŽENJE KORISNIKA
-    const getUserById = (userId: number) => {
+    const getUserById = (userId: number): string => {
         const user = users.find(u => u.id === userId);
         return user ? user.username || user.email || `User ${userId}` : `User ${userId}`;
     };
@@ -242,7 +250,7 @@ export default function DetailPost() {
                                             <div className="button is-loading is-ghost">Loading comments...</div>
                                         </div>
                                     ) : postComments.length > 0 ? (
-                                        postComments.map((comment: any) => (
+                                        postComments.map((comment: Comment) => (
                                             <div key={comment.id} className="comment-item mb-4 p-4" style={{
                                                 backgroundColor: "#2a2a2a",
                                                 borderRadius: "8px",

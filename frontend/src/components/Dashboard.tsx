@@ -28,31 +28,31 @@ export default function Dashboard() {
     const user: IAccount | null = currentUser || cookies.getUserSession();
 
     const handleLogout = () => {
-        console.log('🚪 Logging out...');
+
         dispatch(logout());
         cookies.clearUserSession();
         navigate('/login');
     };
 
     useEffect(() => {
-        console.log('🔍 Auth check:', { isAuthenticated, user });
+
 
         if (!isAuthenticated && !user) {
-            console.log('❌ No user, redirecting to login');
+
             navigate('/login');
             return;
         }
 
         if (currentUser && isAuthenticated && !cookies.getUserSession()) {
-            console.log('💾 Saving user to cookie');
+
             cookies.setUserSession(currentUser);
         }
     }, [isAuthenticated, currentUser, user, navigate, cookies]);
 
-    console.log('🔍 Final user:', user);
+
 
     if (!user) {
-        console.log('🔍 No user found, showing loading...');
+
         return (
             <>
                 <Navigation />
@@ -66,10 +66,9 @@ export default function Dashboard() {
         );
     }
 
-    console.log('🔍 Rendering dashboard for user:', user.email);
+
 
     const formatDate = currentTime.toLocaleDateString('en-GB');
-    const formatTime = currentTime.toLocaleTimeString('en-GB', { hour12: false });
     const formatUTC = currentTime.toISOString().slice(0, 19).replace('T', ' ');
 
     return (
@@ -196,7 +195,7 @@ export default function Dashboard() {
                             <div className="column is-narrow">
                                 <LikedPostsCard
                                     onClick={() => {
-                                        console.log('Opening liked posts...');
+
                                         // navigate('/liked-posts');
                                     }}
                                 />
@@ -204,7 +203,7 @@ export default function Dashboard() {
                             <div className="column is-narrow">
                                 <CommentPostsCard
                                     onClick={() => {
-                                        console.log('Opening comment posts...');
+
                                         // navigate('/comment-posts');
                                     }}
                                 />

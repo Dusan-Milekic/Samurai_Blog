@@ -1,4 +1,4 @@
-import { data } from "react-router-dom";
+
 import Navigation from "./Navigation";
 import { useAuthCookies } from '../utils/cookies';
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
@@ -22,14 +22,6 @@ interface LikedPost {
     user: number;
 }
 
-const likedPosts = [
-    { id: 1, name: "First Samurai Post" },
-    { id: 2, name: "Kendo Techniques" },
-    { id: 3, name: "Bushido Code" },
-    { id: 4, name: "Zen and the Sword" },
-    { id: 5, name: "History of Ronin" },
-    { id: 6, name: "Samurai Armor Evolution" },
-];
 
 export default function LikedPosts() {
     const dispatch = useAppDispatch();

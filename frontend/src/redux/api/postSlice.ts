@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
-import { useAuthCookies } from "../../utils/cookies";
+
 /* ---------- Tipovi ---------- */
 export interface IPost {
   id: number;
@@ -10,6 +10,7 @@ export interface IPost {
   created_at: string;
   published: boolean;
   count_likes: number;
+  author?: number; // 🔥 DODAO author field
 }
 
 /* ---------- Thunk: Fetch posts ---------- */
@@ -22,11 +23,10 @@ export const fetchPosts = createAsyncThunk<IPost[]>(
   }
 );
 
-/* ---------- Thunk: Like post (čeka server) ---------- */
-/* Backend (preporuka): vrati JSON { detail: "liked" | "already liked", count_likes: number } */
+/* ---------- Thunk: Like post ---------- */
 export const likePost = createAsyncThunk<
-    { postId: number; count_likes?: number; detail?: string }, // Return type
-    { userId: number; postId: number }, // 🔥 INPUT TYPE - OBJEKAT!
+    { postId: number; count_likes?: number; detail?: string },
+    { userId: number; postId: number },
     { rejectValue: string }
 >(
     'posts/likePost',
@@ -45,8 +45,8 @@ export const likePost = createAsyncThunk<
 
             const data = await res.json();
             return { postId, count_likes: data.count_likes };
-        } catch  {
-            return rejectWithValue('Network error');
+        } finally{
+          console.log("completed");
         }
     }
 );
@@ -56,7 +56,7 @@ interface PostsState {
   items: IPost[];
   loading: boolean;
   error: string | null;
-  liking: Record<number, boolean>; // per-post stanje za dugme
+  liking: Record<number, boolean>;
 }
 
 const initialState: PostsState = {
@@ -87,29 +87,26 @@ export const postSlice = createSlice({
         state.error = action.error.message || "Failed to fetch posts";
       })
 
-      /* --- LIKE POST: bez optimističkog povećanja --- */
+      /* --- LIKE POST --- */
       .addCase(likePost.pending, (state, action) => {
-        const id = action.meta.arg;
-        state.liking[id] = true; // disable dugme za taj post
+        const { postId } = action.meta.arg; // 🔥 ISPRAVKA - destructure postId
+        state.liking[postId] = true;
       })
       .addCase(likePost.fulfilled, (state, action) => {
         const { postId, count_likes, detail } = action.payload;
         const post = state.items.find((p) => p.id === postId);
         if (post) {
           if (typeof count_likes === "number") {
-            // Ako backend vrati count_likes (preporučeno)
             post.count_likes = count_likes;
           } else if (detail === "liked") {
-            // fallback ako backend ne vrati broj – ipak uvećaj
             post.count_likes += 1;
           }
-          // ako je "already liked" i nema count_likes, ostavi kako jeste
         }
         state.liking[postId] = false;
       })
       .addCase(likePost.rejected, (state, action) => {
-        const id = (action.meta as any).arg as number;
-        state.liking[id] = false;
+        const { postId } = action.meta.arg; // 🔥 ISPRAVKA - destructure postId
+        state.liking[postId] = false;
         state.error = (action.payload as string) || "Failed to like post";
       });
   },
@@ -120,6 +117,13 @@ export const selectPosts = (state: RootState) => state.posts.items;
 export const selectPostsLoading = (state: RootState) => state.posts.loading;
 export const selectPostsError = (state: RootState) => state.posts.error;
 export const selectLikingMap = (state: RootState) => state.posts.liking;
+
+// 🔥 DODAO HELPER SELECTORS
+export const selectPostBySlug = (state: RootState, slug: string) => 
+  state.posts.items.find(post => post.slug === slug);
+
+export const selectIsLiking = (state: RootState, postId: number) => 
+  state.posts.liking[postId] || false;
 
 /* ---------- Export ---------- */
 export default postSlice.reducer;
