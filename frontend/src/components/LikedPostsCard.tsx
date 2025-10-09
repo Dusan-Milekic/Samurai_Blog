@@ -103,11 +103,11 @@ export default function LikedPostsCard({ onClick }: LikedPostsCardProps) {
             </div>
 
             <footer className="card-footer" style={{ borderTop: "1px solid #333" }}>
-                <div className="card-footer-item">
+                <a className="card-footer-item" href="/liked-posts" style={{ textDecoration: "none" }}>
                     <span style={{ color: "#b30000", fontWeight: "600" }}>
                         Click to view →
                     </span>
-                </div>
+                </a>
             </footer>
         </div>
     );

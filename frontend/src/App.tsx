@@ -11,6 +11,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux'; // 🔥 DODAJ Redux Provider
 import { CookiesProvider } from 'react-cookie'; // 🔥 DODAJ Cookies Provider
 import { store } from './redux/store'; // 🔥 DODAJ store import
+import LikedPosts from './components/LikedPosts';
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
             <Route path='/posts' element={<Posts />} />
             <Route path='/dashboard' element={<Dashboard />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
+            <Route path="/liked-posts" element={<LikedPosts />} />
           </Routes>
         </Router>
       </Provider>
