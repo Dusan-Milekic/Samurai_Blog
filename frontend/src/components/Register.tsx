@@ -110,18 +110,16 @@ export default function Register() {
         setIsLoading(true);
 
         try {
-            console.log('🔄 Starting registration...');
+
             const result = await fetchRegister();
 
-            console.log('✅ Registration successful:', result);
+
 
             // 🔥 PRIKAŽI SUCCESS STANJE UMESTO REDIRECT
             setSuccess(result.message || "Registration successful! Please check your email.");
             setIsRegistered(true);
 
-        } catch (error: any) {
-            console.error('❌ Registration error:', error);
-            setError(error.message || "Registration failed. Please try again.");
+
         } finally {
             setIsLoading(false);
         }

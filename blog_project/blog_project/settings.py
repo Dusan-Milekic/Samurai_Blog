@@ -12,6 +12,23 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
+ALLOWED_HOSTS = [
+    'server-production-8e21.up.railway.app',
+    'localhost',
+    '127.0.0.1'
+]
+
+# CORS settings
+CORS_ALLOWED_ORIGINS = [
+    "https://your-frontend.vercel.app",
+]
+CORS_ALLOW_ALL_ORIGINS = True  # Privremeno za test
+
+# CSRF settings
+CSRF_TRUSTED_ORIGINS = [
+    "https://server-production-8e21.up.railway.app",
+]
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -135,3 +152,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'ecbff96ab86351fce4925de4c46d5f4b'
 EMAIL_HOST_PASSWORD = '8da5d567acd552b1c17ea8b56eb4189f'
 DEFAULT_FROM_EMAIL = 'noreply@sandbox.mailjet.com'  # 🔥 MAILJET SANDBOX
+
+
+
