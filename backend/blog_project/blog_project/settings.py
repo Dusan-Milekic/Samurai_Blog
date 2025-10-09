@@ -17,6 +17,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '.onrender.com',  # Za sve onrender subdomain-e
+    'samurai-blog.onrender.com',  # Specifičan domen
 ]
 
 
