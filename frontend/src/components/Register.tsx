@@ -120,6 +120,7 @@ export default function Register() {
             setIsRegistered(true);
 
 
+
         } finally {
             setIsLoading(false);
         }

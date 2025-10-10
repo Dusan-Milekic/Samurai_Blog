@@ -22,11 +22,17 @@ ALLOWED_HOSTS = [
 
 
 
-CORS_ALLOW_ALL_ORIGINS = True  # Privremeno za test
+CORS_ALLOWED_ORIGINS = [
+    "https://samurai-blog.netlify.app",
+    "https://samurai-blog.vercel.app",
+    "http://localhost:3000",  # za dev
+    "http://127.0.0.1:3000",
+]
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
     "https://server-production-8e21.up.railway.app",
-    "https://samurai-blog.vercel.app/"
+    "https://samurai-blog.vercel.app",
+    "https://samurai-blog.netlify.app",  # Dodaj netlify
 ]
 
 # Dodaj CORS headers
