@@ -37,6 +37,7 @@ function AppContent() {
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/liked-posts" element={<LikedPosts />} />
         <Route path="/posts/:slug" element={<DetailPost />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
       </Routes>
     </Router>
   );
