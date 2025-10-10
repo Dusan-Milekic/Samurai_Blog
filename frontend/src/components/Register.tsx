@@ -50,22 +50,36 @@ export default function Register() {
 
     // Register API poziv
     async function fetchRegister(): Promise<RegisterResponse> {
+        const formData = {
+            first_name: first_name.current?.value || '',
+            last_name: last_name.current?.value || '',
+            email: email.current?.value || '',
+            password: password.current?.value || '',
+            confirm_password: confirm_password.current?.value || '',
+        };
+
+        // 🔍 DEBUG: Log what you're sending
+        console.log('📤 Sending to server:', formData);
+
+        if (!formData.first_name || !formData.email || !formData.password) {
+            throw new Error('Please fill in all required fields');
+        }
+
         const response = await fetch("https://samurai-blog.onrender.com/auth/register/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({
-                first_name: first_name.current?.value,
-                last_name: last_name.current?.value,
-                email: email.current?.value,
-                password: password.current?.value,
-                confirm_password: confirm_password.current?.value,
-            })
+            body: JSON.stringify(formData)
         });
+
+        // 🔍 DEBUG: Log response details
+        console.log('📥 Response status:', response.status);
+        console.log('📥 Response ok:', response.ok);
 
         if (!response.ok) {
             const errorData = await response.json();
+            console.error('❌ Server error:', errorData); // See exact error
             throw new Error(errorData.error || `Registration failed: ${response.status}`);
         }
 
