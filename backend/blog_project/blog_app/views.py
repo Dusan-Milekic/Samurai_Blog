@@ -83,7 +83,6 @@ class LikesView(APIView):
 
 # ---------- REGISTRACIJA ----------
 @api_view(["POST"])
-
 def register(request):
     first_name = request.data.get("first_name")
     last_name = request.data.get("last_name")
@@ -113,42 +112,49 @@ def register(request):
         # Kreiraj verification
         verification = EmailVerification.objects.create(user=user)
         
-        verification_url = f"http://localhost:5173/verify-email?token={verification.verification_token}"
+        base_url = "https://samurai-blog.onrender.com"
+        verification_url = f"{base_url}/verify-email?token={verification.verification_token}"
         
-        # 🔥 POKUŠAJ DA POŠALJEŠ EMAIL
+        # 🔥 POŠALJI EMAIL
         try:
+            print(f"📧 Attempting to send email to: {email}")
+            print(f"📧 From: {settings.DEFAULT_FROM_EMAIL}")
+            
             send_mail(
                 subject='Verify Your Email - Samurai Blog',
                 message=f"""
-                Hi {first_name}!
+                            Hi {first_name}!
 
-                Welcome to Samurai Blog Platform! 
+                            Welcome to Samurai Blog Platform! 
 
-                To complete your registration, please verify your email address by clicking the link below:
+                            To complete your registration, please verify your email address by clicking the link below:
 
-                {verification_url}
+                            {verification_url}
 
-                This verification link will expire in 24 hours.
+                            This verification link will expire in 24 hours.
 
-                Best regards,
-                The Samurai Blog Team
-                                """,
-                                from_email='dusanmilekic0511@gmail.com',
-                                recipient_list=[email],
-                                fail_silently=False,
-                            )
-                
-            email_status = "Email sent successfully! Please check your inbox."
+                            Best regards,
+                            The Samurai Blog Team
+                        """,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[email],
+                fail_silently=False,  # This will raise exceptions
+            )
+            
+            print(f"✅ Email sent successfully to {email}")
+            email_status = "Registration successful! Please check your email to verify your account."
             
         except Exception as email_error:
-            email_status = f"Registration successful, but email failed to send. Verification link: {verification_url}"
-
-      
+            print(f"❌ Email error type: {type(email_error).__name__}")
+            print(f"❌ Email error message: {str(email_error)}")
+            
+            # Return detailed error for debugging
+            email_status = f"Account created but email failed: {str(email_error)}"
         
         return Response({
             "message": email_status,
             "success": True,
-        
+            "verification_url": verification_url  # 🔥 Include for testing
         }, status=status.HTTP_201_CREATED)
         
     except Exception as e:
