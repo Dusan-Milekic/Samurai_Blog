@@ -113,20 +113,20 @@ def register(request):
         # Kreiraj verification
         verification = EmailVerification.objects.create(user=user)
         
-       # verification_url = f"http://localhost:5173/verify-email?token={verification.verification_token}"
+        verification_url = f"http://localhost:5173/verify-email?token={verification.verification_token}"
         
         # 🔥 POKUŠAJ DA POŠALJEŠ EMAIL
         try:
             send_mail(
-                subject='🔥 Verify Your Email - Samurai Blog',
+                subject='Verify Your Email - Samurai Blog',
                 message=f"""
                 Hi {first_name}!
 
-                Welcome to Samurai Blog Platform! 🚀
+                Welcome to Samurai Blog Platform! 
 
                 To complete your registration, please verify your email address by clicking the link below:
 
-                
+                {verification_url}
 
                 This verification link will expire in 24 hours.
 
@@ -138,12 +138,11 @@ def register(request):
                                 fail_silently=False,
                             )
                 
-            print(f"✅ Email sent successfully to: {email}")
             email_status = "Email sent successfully! Please check your inbox."
             
         except Exception as email_error:
-            email_status = f"Registration successful, but email failed to send. Verification link:"
-        
+            email_status = f"Registration successful, but email failed to send. Verification link: {verification_url}"
+
       
         
         return Response({
@@ -177,16 +176,16 @@ def verify_email(request):
                 "success": True
             }, status=status.HTTP_200_OK)
         
-        # 🔥 OZNAČI EMAIL KAO VERIFIKOVANO
+        # OZNAČI EMAIL KAO VERIFIKOVANO
         verification.is_verified = True
         verification.save()
         
-        # 🔥 AKTIVIRAJ KORISNIKA I VERIFIKUJ EMAIL
+        # AKTIVIRAJ KORISNIKA
         user = verification.user
-        user.is_active = True  # 🔥 DODAJ OVO!
+        user.is_active = True 
         user.save()
         
-        print(f"🔍 Email verified for: {user.email}")
+        
         
         return Response({
             "message": "Email verified successfully! You can now log in.",
@@ -214,12 +213,12 @@ def login(request):
     
     try:
         user = User.objects.get(email=email, password=password)
-          # 🔥 PROVERI DA LI JE KORISNIK AKTIVAN
+          #  PROVERI DA LI JE KORISNIK AKTIVAN
         if not user.is_active:
             return Response({
                 "error": "Please verify your email before logging in. Check your email for verification link."
             }, status=400)
-        # 🔥 PROVERI DA LI JE EMAIL VERIFIKOVAN
+        # PROVERI DA LI JE EMAIL VERIFIKOVAN
         try:
             verification = EmailVerification.objects.get(user=user)
             if not verification.is_verified:
